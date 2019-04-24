@@ -80,76 +80,76 @@ namespace WindowsFormsApplication1
 
         private void button1_Click(object sender, EventArgs e)
         {
-
             OpenFileDialog ofd = new OpenFileDialog();
-            if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+
+            if (ofd.ShowDialog() != System.Windows.Forms.DialogResult.OK)
             {
-
-                PIX_BR = new double[256, 256];
-                int m = 0, n = 0;
-                Image imIn = Image.FromFile(ofd.FileName);
-                Bitmap inBmp = new Bitmap(imIn);
-                Bitmap bmpCrop = new Bitmap(256,256);
-                for (int i = 0; i < bmpCrop.Width; i++)
-                    for (int j = 0; j < bmpCrop.Height; j++)
-                        bmpCrop.SetPixel(i, j, inBmp.GetPixel(i, j));
-                // Assign the cursor in the Stream to the Form's Cursor property.
-                Image im = bmpCrop;
-                //im = Crop(im, new Rectangle(0, 0, 256, 256));
-                pictureBox1.Image = im;
-                Bitmap bmp = new Bitmap(im);
-                //Color pixel;
-                PixelFormat pxf = PixelFormat.Format24bppRgb;
-
-
-
-
-                // Получаем данные картинки.
-                Rectangle rect = new Rectangle(0, 0, bmp.Width, bmp.Height);
-                //Блокируем набор данных изображения в памяти
-                BitmapData bmpData = bmp.LockBits(rect, ImageLockMode.ReadWrite, pxf);
-
-                // Получаем адрес первой линии.
-                IntPtr ptr = bmpData.Scan0;
-                //На 3 умножаем - поскольку RGB цвет кодируется 3-мя байтами
-              
-                int numBytes = bmpData.Stride * bmp.Height;
-                int widthBytes = bmpData.Stride;
-                byte[] rgbValues = new byte[numBytes];
-
-                // Копируем значения в массив.
-                Marshal.Copy(ptr, rgbValues, 0, numBytes);
-
-                // Перебираем пиксели по 3 байта на каждый и меняем значения
-                for (int counter = 0; counter < rgbValues.Length; counter += 3)
-                {
-                    byte color_b = 0;
-                    double value = rgbValues[counter] * 0.3 + rgbValues[counter + 1] * 0.59 + rgbValues[counter + 2] * 0.11;
-                    color_b = Convert.ToByte(value);
-                    if (m == 256)
-                    {
-                        n++;
-                        m = 0;
-                    }
-                    PIX_BR[m, n] = value;
-                    m++;
-
-
-                    rgbValues[counter] = color_b;
-                    rgbValues[counter + 1] = color_b;
-                    rgbValues[counter + 2] = color_b;
-
-                }
-                // Копируем набор данных обратно в изображение
-                Marshal.Copy(rgbValues, 0, ptr, numBytes);
-
-                // Разблокируем набор данных изображения в памяти.
-                bmp.UnlockBits(bmpData);
-                pictureBox1.Image = bmp;
-                pic = true;
-                count++;
-                undoClass.add(pictureBox1.Image, pictureBox2.Image, true, false);
+                return;
             }
+            PIX_BR = new double[256, 256];
+            int m = 0, n = 0;
+            Image imIn = Image.FromFile(ofd.FileName);
+            Bitmap inBmp = new Bitmap(imIn);
+            Bitmap bmpCrop = new Bitmap(256, 256);
+            for (int i = 0; i < bmpCrop.Width; i++)
+                for (int j = 0; j < bmpCrop.Height; j++)
+                    bmpCrop.SetPixel(i, j, inBmp.GetPixel(i, j));
+            // Assign the cursor in the Stream to the Form's Cursor property.
+            Image im = bmpCrop;
+            //im = Crop(im, new Rectangle(0, 0, 256, 256));
+            pictureBox1.Image = im;
+            Bitmap bmp = new Bitmap(im);
+            //Color pixel;
+            PixelFormat pxf = PixelFormat.Format24bppRgb;
+
+
+
+
+            // Получаем данные картинки.
+            Rectangle rect = new Rectangle(0, 0, bmp.Width, bmp.Height);
+            //Блокируем набор данных изображения в памяти
+            BitmapData bmpData = bmp.LockBits(rect, ImageLockMode.ReadWrite, pxf);
+
+            // Получаем адрес первой линии.
+            IntPtr ptr = bmpData.Scan0;
+            //На 3 умножаем - поскольку RGB цвет кодируется 3-мя байтами
+
+            int numBytes = bmpData.Stride * bmp.Height;
+            int widthBytes = bmpData.Stride;
+            byte[] rgbValues = new byte[numBytes];
+
+            // Копируем значения в массив.
+            Marshal.Copy(ptr, rgbValues, 0, numBytes);
+
+            // Перебираем пиксели по 3 байта на каждый и меняем значения
+            for (int counter = 0; counter < rgbValues.Length; counter += 3)
+            {
+                byte color_b = 0;
+                double value = rgbValues[counter] * 0.3 + rgbValues[counter + 1] * 0.59 + rgbValues[counter + 2] * 0.11;
+                color_b = Convert.ToByte(value);
+                if (m == 256)
+                {
+                    n++;
+                    m = 0;
+                }
+                PIX_BR[m, n] = value;
+                m++;
+
+
+                rgbValues[counter] = color_b;
+                rgbValues[counter + 1] = color_b;
+                rgbValues[counter + 2] = color_b;
+
+            }
+            // Копируем набор данных обратно в изображение
+            Marshal.Copy(rgbValues, 0, ptr, numBytes);
+
+            // Разблокируем набор данных изображения в памяти.
+            bmp.UnlockBits(bmpData);
+            pictureBox1.Image = bmp;
+            pic = true;
+            count++;
+            undoClass.add(pictureBox1.Image, pictureBox2.Image, true, false);
         }
 
         private void button4_Click(object sender, EventArgs e)
