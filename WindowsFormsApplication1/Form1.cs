@@ -1370,6 +1370,17 @@ namespace WindowsFormsApplication1
 
         }
 
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button16_Click(object sender, EventArgs e)
+        {
+            var qualityOfSegmentationForm = new EdgeDetectionEvaluationForm(new CriteriaEvaluationResult[] {new CriteriaEvaluationResult("Pratt", 0, 100, 99)});
+            qualityOfSegmentationForm.Show(this);
+        }
+
         private void button2_Click(object sender, EventArgs e)
         {
             if ((pic == true) && (count > 0))

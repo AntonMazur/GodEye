@@ -6,6 +6,22 @@ using System.Threading.Tasks;
 
 namespace WindowsFormsApplication1
 {
+    public struct CriteriaEvaluationResult
+    {
+        public string name;
+        public double worst;
+        public double best;
+        public double value;
+
+        public CriteriaEvaluationResult(string name, double worst, double best, double value)
+        {
+            this.name = name;
+            this.worst = worst;
+            this.best = best;
+            this.value = value;
+        }
+    }
+
     class SegmentationQualityEvaluator
     {
 
