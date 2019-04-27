@@ -63,6 +63,7 @@
             this.btn_aCanny = new System.Windows.Forms.Button();
             this.button15 = new System.Windows.Forms.Button();
             this.button16 = new System.Windows.Forms.Button();
+            this.btn_saveResult = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -393,7 +394,7 @@
             // button14
             // 
             this.button14.Enabled = false;
-            this.button14.Location = new System.Drawing.Point(371, 606);
+            this.button14.Location = new System.Drawing.Point(319, 511);
             this.button14.Margin = new System.Windows.Forms.Padding(4);
             this.button14.Name = "button14";
             this.button14.Size = new System.Drawing.Size(120, 42);
@@ -426,7 +427,7 @@
             // 
             // button16
             // 
-            this.button16.Location = new System.Drawing.Point(583, 566);
+            this.button16.Location = new System.Drawing.Point(583, 541);
             this.button16.Margin = new System.Windows.Forms.Padding(4);
             this.button16.Name = "button16";
             this.button16.Size = new System.Drawing.Size(120, 82);
@@ -435,11 +436,23 @@
             this.button16.UseVisualStyleBackColor = true;
             this.button16.Click += new System.EventHandler(this.button16_Click);
             // 
+            // btn_saveResult
+            // 
+            this.btn_saveResult.Location = new System.Drawing.Point(583, 630);
+            this.btn_saveResult.Margin = new System.Windows.Forms.Padding(4);
+            this.btn_saveResult.Name = "btn_saveResult";
+            this.btn_saveResult.Size = new System.Drawing.Size(120, 82);
+            this.btn_saveResult.TabIndex = 36;
+            this.btn_saveResult.Text = "Сохранить результат в файл";
+            this.btn_saveResult.UseVisualStyleBackColor = true;
+            this.btn_saveResult.Click += new System.EventHandler(this.btn_saveResult_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1282, 694);
+            this.ClientSize = new System.Drawing.Size(1282, 733);
+            this.Controls.Add(this.btn_saveResult);
             this.Controls.Add(this.button16);
             this.Controls.Add(this.button15);
             this.Controls.Add(this.btn_aCanny);
@@ -526,6 +539,7 @@
         private System.Windows.Forms.Button btn_aCanny;
         private System.Windows.Forms.Button button15;
         private System.Windows.Forms.Button button16;
+        private System.Windows.Forms.Button btn_saveResult;
     }
 }
 

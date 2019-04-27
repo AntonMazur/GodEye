@@ -23,6 +23,8 @@ namespace WindowsFormsApplication1
 {
     public partial class Form1 : Form
     {
+        const int maxImageWidth = 320;
+        const int maxImageHeight = 320;
         bool canny = false;
         int sch = 0;
         LinkedList<point> car = new LinkedList<point>();
@@ -86,14 +88,19 @@ namespace WindowsFormsApplication1
             {
                 return;
             }
-            PIX_BR = new double[256, 256];
+
+            var inputImage = Image.FromFile(ofd.FileName);
+
+            int newWidth = (int)(inputImage.Width > inputImage.Height ? 320 : 320d * inputImage.Width / inputImage.Height);
+            int newHeight = (int)(inputImage.Width < inputImage.Height ? 320 : 320d * inputImage.Height / inputImage.Width);
+            var resizeFilter = new ResizeBicubic(newWidth, newHeight);
+            var resizedImage = resizeFilter.Apply((Bitmap)inputImage);
+            PIX_BR = new double[resizedImage.Height, resizedImage.Width];
             int m = 0, n = 0;
             Image imIn = Image.FromFile(ofd.FileName);
-            Bitmap inBmp = new Bitmap(imIn);
-            Bitmap bmpCrop = new Bitmap(256, 256);
-            for (int i = 0; i < bmpCrop.Width; i++)
-                for (int j = 0; j < bmpCrop.Height; j++)
-                    bmpCrop.SetPixel(i, j, inBmp.GetPixel(i, j));
+            Bitmap inBmp = resizedImage;
+            Bitmap bmpCrop = resizedImage;
+
             // Assign the cursor in the Stream to the Form's Cursor property.
             Image im = bmpCrop;
             //im = Crop(im, new Rectangle(0, 0, 256, 256));
@@ -127,12 +134,12 @@ namespace WindowsFormsApplication1
                 byte color_b = 0;
                 double value = rgbValues[counter] * 0.3 + rgbValues[counter + 1] * 0.59 + rgbValues[counter + 2] * 0.11;
                 color_b = Convert.ToByte(value);
-                if (m == 256)
+                if (m == bmpCrop.Width)
                 {
                     n++;
                     m = 0;
                 }
-                PIX_BR[m, n] = value;
+                PIX_BR[n, m] = value;
                 m++;
 
 
@@ -952,12 +959,14 @@ namespace WindowsFormsApplication1
 
         private void button10_Click(object sender, EventArgs e)
         {
-            contour = new int[65536, 2];
+            var width = PIX_BR.GetLength(1);
+            var height = PIX_BR.GetLength(0);
+            contour = new int[width * height, 2];
             contourC = 0;
-            int limith = 0, m =0, n =0;
+            int limith = 0, m = 0, n = 0;
             int limitl = 0;
             int sizeOfGausMask = 5;
-            rezCanny = new int[256, 256];
+            rezCanny = new int[height, width];
             try
             {
                 sizeOfGausMask = Convert.ToInt16(textBox5.Text);
@@ -998,7 +1007,7 @@ namespace WindowsFormsApplication1
             {
                 if (rgbValues[counter] > 128)
                 {
-                    rezCanny[m, n] = (int)PIX_BR[m, n];
+                    rezCanny[n, m] = (int)PIX_BR[n, m];
 
                     contour[contourC, 0] = m;
                     contour[contourC, 1] = n;
@@ -1008,9 +1017,9 @@ namespace WindowsFormsApplication1
                     
             
                 else
-                    rezCanny[m, n] = 0;
+                    rezCanny[n, m] = 0;
                 m++;
-                if (m == 256)
+                if (m == width)
                 {
                     n++;
                     m = 0;
@@ -1379,6 +1388,29 @@ namespace WindowsFormsApplication1
         {
             var qualityOfSegmentationForm = new EdgeDetectionEvaluationForm(new CriteriaEvaluationResult[] {new CriteriaEvaluationResult("Pratt", 0, 100, 99)});
             qualityOfSegmentationForm.Show(this);
+        }
+
+        private void btn_saveResult_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "Images|*.png;*.bmp;*.jpg";
+            ImageFormat format = ImageFormat.Bmp;
+            if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                string ext = System.IO.Path.GetExtension(sfd.FileName);
+                switch (ext)
+                {
+                    case ".jpg":
+                        format = ImageFormat.Jpeg;
+                        break;
+                    case ".png":
+                        format = ImageFormat.Png;
+                        break;
+                }
+                Bitmap rawResultImg = (Bitmap) pictureBox2.Image;
+
+                (rawResultImg.Clone(new Rectangle(0, 0, rawResultImg.Width, rawResultImg.Height), PixelFormat.Format24bppRgb)).Save(sfd.FileName, format);
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)
